@@ -67,7 +67,6 @@
 
 @interface SwipeView () <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableDictionary *itemViews;
 @property (nonatomic, strong) NSMutableSet *itemViewPool;
 @property (nonatomic, assign) NSInteger previousItemIndex;
@@ -1085,7 +1084,15 @@
         CGFloat delta = _vertical? (_scrollView.contentOffset.y - _previousContentOffset.y): (_scrollView.contentOffset.x - _previousContentOffset.x);
         _previousContentOffset = _scrollView.contentOffset;
         _scrollOffset += delta / (_vertical? _itemSize.height: _itemSize.width);
-        
+
+        //  BEGIN HACK
+        // _scrollOffset divide by zero check
+        if(isnan(_scrollOffset))
+        {
+            _scrollOffset = 0.0f;
+        }
+        //  END HACK
+
         //update view and call delegate
         [self didScroll];
     }
